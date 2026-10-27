@@ -1,0 +1,6 @@
+{
+  "name": "Token Ujian SMK As-Syafi'iyah",
+  "description": "Layar Tampilan Token Ujian & Jam Realtime Resmi SMK As-Syafi'iyah untuk Ruang Ujian dan Proyektor",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
