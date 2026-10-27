@@ -1,0 +1,142 @@
+{
+  "entities": {
+    "ActiveExamSession": {
+      "title": "ActiveExamSession",
+      "description": "Layar dan status token ujian aktif yang disinkronkan ke seluruh ruangan",
+      "type": "object",
+      "properties": {
+        "currentToken": {
+          "type": "string",
+          "description": "Kode token ujian CBT",
+          "maxLength": 16
+        },
+        "tokenCreatedAt": {
+          "type": "number",
+          "description": "Waktu pembuatan token dalam milidetik"
+        },
+        "tokenExpiresAt": {
+          "type": "number",
+          "description": "Waktu kedaluwarsa token dalam milidetik"
+        },
+        "examName": {
+          "type": "string",
+          "description": "Nama kegiatan ujian",
+          "maxLength": 100
+        },
+        "subject": {
+          "type": "string",
+          "description": "Mata pelajaran atau tes",
+          "maxLength": 100
+        },
+        "gradeAndMajor": {
+          "type": "string",
+          "description": "Tingkat kelas dan jurusan",
+          "maxLength": 100
+        },
+        "roomName": {
+          "type": "string",
+          "description": "Nama ruang atau seluruh ruangan",
+          "maxLength": 100
+        },
+        "sessionName": {
+          "type": "string",
+          "description": "Sesi ujian",
+          "maxLength": 100
+        },
+        "proctor1": {
+          "type": "string",
+          "description": "Nama pengawas utama",
+          "maxLength": 100
+        },
+        "proctor2": {
+          "type": "string",
+          "description": "Nama pengawas pendamping",
+          "maxLength": 100
+        },
+        "cbtUrl": {
+          "type": "string",
+          "description": "URL CBT online",
+          "maxLength": 200
+        },
+        "announcement": {
+          "type": "string",
+          "description": "Pengumuman pengawas",
+          "maxLength": 300
+        },
+        "soundEnabled": {
+          "type": "boolean",
+          "description": "Status notifikasi suara"
+        },
+        "tokenDurationMinutes": {
+          "type": "number",
+          "description": "Durasi token dalam menit"
+        },
+        "displaySize": {
+          "type": "string",
+          "description": "Ukuran huruf display",
+          "enum": ["normal", "large", "jumbo"]
+        },
+        "iconType": {
+          "type": "string",
+          "description": "Jenis ikon header",
+          "enum": ["graduation", "school", "book"]
+        },
+        "updatedAt": {
+          "type": "number",
+          "description": "Waktu pembaruan terakhir"
+        }
+      },
+      "required": ["currentToken", "tokenCreatedAt", "examName", "subject", "updatedAt"]
+    },
+    "TokenHistoryItem": {
+      "title": "TokenHistoryItem",
+      "description": "Catatan riwayat token yang pernah dibuat",
+      "type": "object",
+      "properties": {
+        "token": {
+          "type": "string",
+          "description": "Kode token yang dibuat",
+          "maxLength": 16
+        },
+        "createdAt": {
+          "type": "number",
+          "description": "Waktu pembuatan token"
+        },
+        "expiresAt": {
+          "type": "number",
+          "description": "Waktu kedaluwarsa token"
+        },
+        "subject": {
+          "type": "string",
+          "description": "Mata pelajaran",
+          "maxLength": 100
+        },
+        "session": {
+          "type": "string",
+          "description": "Sesi ujian",
+          "maxLength": 100
+        },
+        "notes": {
+          "type": "string",
+          "description": "Catatan token",
+          "maxLength": 200
+        }
+      },
+      "required": ["token", "createdAt", "subject"]
+    }
+  },
+  "firestore": {
+    "/exam_state/{sessionId}": {
+      "schema": {
+        "$ref": "#/entities/ActiveExamSession"
+      },
+      "description": "Status sesi ujian aktif yang disiarkan ke seluruh ruangan"
+    },
+    "/token_history/{historyId}": {
+      "schema": {
+        "$ref": "#/entities/TokenHistoryItem"
+      },
+      "description": "Arsip riwayat token ujian"
+    }
+  }
+}

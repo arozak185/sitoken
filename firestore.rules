@@ -1,0 +1,63 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Global Safety Net: Default deny all
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // Helper functions
+    function isValidId(id) {
+      return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    function incoming() {
+      return request.resource.data;
+    }
+
+    function existing() {
+      return resource.data;
+    }
+
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isAdmin() {
+      return isSignedIn() && (
+        request.auth.token.email == 'rozak.a003@gmail.com' &&
+        request.auth.token.email_verified == true
+      );
+    }
+
+    // Validations for ActiveExamSession
+    function isValidActiveExamSession(data) {
+      return data.currentToken is string && data.currentToken.size() >= 1 && data.currentToken.size() <= 16 &&
+        data.tokenCreatedAt is number &&
+        data.examName is string && data.examName.size() <= 100 &&
+        data.subject is string && data.subject.size() <= 100 &&
+        data.updatedAt is number;
+    }
+
+    // Validations for TokenHistoryItem
+    function isValidTokenHistory(data) {
+      return data.token is string && data.token.size() >= 1 && data.token.size() <= 16 &&
+        data.createdAt is number &&
+        data.subject is string && data.subject.size() <= 100;
+    }
+
+    // Active exam token state (Publicly readable for all classroom displays/projectors)
+    match /exam_state/{sessionId} {
+      allow get, list: if true;
+      allow create, update: if isValidId(sessionId) && isValidActiveExamSession(incoming());
+      allow delete: if isAdmin();
+    }
+
+    // Token history archive
+    match /token_history/{historyId} {
+      allow get, list: if true;
+      allow create: if isValidId(historyId) && isValidTokenHistory(incoming());
+      allow update, delete: if isAdmin();
+    }
+  }
+}

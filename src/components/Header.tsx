@@ -12,6 +12,9 @@ import {
   EyeOff,
   Sun,
   Contrast,
+  Cloud,
+  CloudOff,
+  Radio,
 } from 'lucide-react';
 
 interface HeaderProps {
@@ -27,7 +30,7 @@ export const Header: React.FC<HeaderProps> = ({
   isFullscreen,
   onToggleFullscreen,
 }) => {
-  const { state, updateSettings } = useExam();
+  const { state, updateSettings, cloudStatus } = useExam();
   const { settings, examInfo } = state;
 
   return (
@@ -44,6 +47,38 @@ export const Header: React.FC<HeaderProps> = ({
               <span className="hidden md:inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-100 text-emerald-800 tracking-wide uppercase">
                 TKA 2026
               </span>
+              {/* Cloud Sync Status Badge */}
+              <div
+                className={`hidden lg:inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-bold border transition-colors ${
+                  cloudStatus === 'connected'
+                    ? 'bg-emerald-50 text-emerald-800 border-emerald-200/80'
+                    : cloudStatus === 'connecting'
+                    ? 'bg-amber-50 text-amber-800 border-amber-200/80 animate-pulse'
+                    : 'bg-slate-100 text-slate-600 border-slate-200'
+                }`}
+                title={
+                  cloudStatus === 'connected'
+                    ? 'Terhubung ke Firebase: Token otomatis tersinkron ke semua ruangan secara realtime'
+                    : 'Menghubungkan ke server cloud Firebase...'
+                }
+              >
+                <span
+                  className={`w-1.5 h-1.5 rounded-full ${
+                    cloudStatus === 'connected'
+                      ? 'bg-emerald-500 animate-ping'
+                      : cloudStatus === 'connecting'
+                      ? 'bg-amber-500'
+                      : 'bg-slate-400'
+                  }`}
+                />
+                <span>
+                  {cloudStatus === 'connected'
+                    ? 'Live Multi-Ruangan'
+                    : cloudStatus === 'connecting'
+                    ? 'Menghubungkan...'
+                    : 'Offline'}
+                </span>
+              </div>
             </div>
             <p className="text-xs text-slate-500 font-medium leading-tight">
               Sistem Informasi Token — Tes Kemampuan Akademik (TKA)
